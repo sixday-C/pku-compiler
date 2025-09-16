@@ -86,7 +86,8 @@ class ReturnStmtAST :public StmtAST{
     std::unique_ptr<BaseAST> value;
 
     void Dump() const override{
-        std::cout<<" Return "<<value;
+        std::cout<<" Return ";
+        value->Dump();
     }
 };
 
