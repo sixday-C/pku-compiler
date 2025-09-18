@@ -68,6 +68,7 @@ class NumberAST:public BaseAST{
     NumberAST(int v) : value(v) {}
 
     void Dump() const override{
+        std::cout<<"NumberAST : ";
         std::cout<<value;
     }
 };

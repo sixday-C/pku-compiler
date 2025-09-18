@@ -9,7 +9,7 @@
 
 // 因为 Flex 会用到 Bison 中关于 token 的定义
 // 所以需要 include Bison 生成的头文件
-#include "sysy.tab.hpp"
+#include "sysy.tab.hpp" //所以文件要叫sysy
 
 using namespace std;
 
@@ -35,7 +35,7 @@ Hexadecimal   0[xX][0-9a-fA-F]+
 "int"           { return INT; }
 "return"        { return RETURN; }
 
-{Identifier}    { yylval.str_val = new string(yytext); return IDENT; }
+{Identifier}    { yylval.str_val = new string(yytext); return IDENT; } //main
 
 {Decimal}       { yylval.int_val = strtol(yytext, nullptr, 0); return INT_CONST; }
 {Octal}         { yylval.int_val = strtol(yytext, nullptr, 0); return INT_CONST; }
