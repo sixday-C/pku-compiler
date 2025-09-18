@@ -33,8 +33,9 @@ auto ret = yyparse(ast);
 assert(!ret);
 
 // dump AST
-ast->Dump();
-cout << endl;
+//ast->Dump();
+ast->IR();
+cout <<endl;
 
   return 0;
 }

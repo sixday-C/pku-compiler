@@ -15,11 +15,21 @@ Number    ::= INT_CONST;
 
 */
 
+/*
+
+# fun @main(): i32 {
+# %entry:
+#   ret 0
+# }
+
+*/
+
 // 所有 AST 的基类
 class BaseAST {
  public:
   virtual ~BaseAST() = default;
   virtual void Dump() const = 0;
+  virtual void IR() const = 0;
 };
 
 // CompUnit 是 BaseAST
@@ -33,6 +43,9 @@ class CompUnitAST : public BaseAST {
     func_def->Dump();
     std::cout << " }";
   }
+    virtual void IR() const override{
+        func_def->IR();
+    }
 };
 
 // FuncDef 也是 BaseAST
@@ -49,6 +62,11 @@ class FuncDefAST : public BaseAST {
     block->Dump();
     std::cout << " }";
     }
+    void IR()const override{
+        std::cout<<"fun @"<<ident<<"(): ";
+        func_type->IR();
+        block->IR();
+    }
 };
 
 class FuncTypeAST : public BaseAST{
@@ -60,6 +78,9 @@ class FuncTypeAST : public BaseAST{
         std::cout<<"FuncTypeAST { ";
         std::cout<<type<<" }";
     }
+    void IR() const override{
+        std::cout<<"i32";
+    }
 };
 
 class NumberAST:public BaseAST{
@@ -69,6 +90,9 @@ class NumberAST:public BaseAST{
 
     void Dump() const override{
         std::cout<<"NumberAST : ";
+        std::cout<<value;
+    }
+    void IR() const override{
         std::cout<<value;
     }
 };
@@ -90,6 +114,11 @@ class ReturnStmtAST :public StmtAST{
         std::cout<<" Return ";
         value->Dump();
     }
+    void IR() const override{
+        std::cout<<"    ret ";
+        value->IR();
+        std::cout<<std::endl;
+    }
 };
 
 class BlockAST: public BaseAST{
@@ -99,6 +128,12 @@ class BlockAST: public BaseAST{
     void Dump() const override{
         std::cout<<"BlockAST:{";
         stmt->Dump();
+        std::cout<<"}";
+    }
+    void IR() const override{
+        std::cout<<" {"<<std::endl;
+        std::cout<<"%entry:"<<std::endl;
+        stmt->IR();
         std::cout<<"}";
     }
 };
