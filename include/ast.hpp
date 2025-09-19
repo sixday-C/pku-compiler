@@ -29,7 +29,7 @@ class BaseAST {
  public:
   virtual ~BaseAST() = default;
   virtual void Dump() const = 0;
-  virtual void IR() const = 0;
+  virtual void IR(std::ostream &out) const  = 0; 
 };
 
 // CompUnit 是 BaseAST
@@ -38,14 +38,14 @@ class CompUnitAST : public BaseAST {
   // 用智能指针管理对象
   std::unique_ptr<BaseAST> func_def;
 
-   void Dump() const override {
+    void Dump() const override {
     std::cout << "CompUnitAST { ";
     func_def->Dump();
     std::cout << " }";
   }
-    virtual void IR() const override{
-        func_def->IR();
-    }
+    virtual void IR(std::ostream &out) const override {
+    func_def->IR(out); // 把同一流传给子节点
+}
 };
 
 // FuncDef 也是 BaseAST
@@ -62,10 +62,10 @@ class FuncDefAST : public BaseAST {
     block->Dump();
     std::cout << " }";
     }
-    void IR()const override{
-        std::cout<<"fun @"<<ident<<"(): ";
-        func_type->IR();
-        block->IR();
+    void IR(std::ostream &out)const override {
+        out<<"fun @"<<ident<<"(): ";
+        func_type->IR(out);
+        block->IR(out);
     }
 };
 
@@ -78,8 +78,8 @@ class FuncTypeAST : public BaseAST{
         std::cout<<"FuncTypeAST { ";
         std::cout<<type<<" }";
     }
-    void IR() const override{
-        std::cout<<"i32";
+    void IR(std::ostream &out) const override {
+        out<<"i32";
     }
 };
 
@@ -92,8 +92,8 @@ class NumberAST:public BaseAST{
         std::cout<<"NumberAST : ";
         std::cout<<value;
     }
-    void IR() const override{
-        std::cout<<value;
+    void IR(std::ostream &out) const override{
+        out<<value;
     }
 };
 
@@ -104,6 +104,7 @@ class StmtAST :public BaseAST{
     void Dump() const override{
         std::cout<<" StmtAST "; 
     }
+    virtual void IR(std::ostream &out) const override = 0;
 };
 
 class ReturnStmtAST :public StmtAST{
@@ -114,10 +115,10 @@ class ReturnStmtAST :public StmtAST{
         std::cout<<" Return ";
         value->Dump();
     }
-    void IR() const override{
-        std::cout<<"    ret ";
-        value->IR();
-        std::cout<<std::endl;
+    void IR(std::ostream &out) const override{
+        out<<"    ret ";
+        value->IR(out);
+        out<<std::endl;
     }
 };
 
@@ -130,11 +131,11 @@ class BlockAST: public BaseAST{
         stmt->Dump();
         std::cout<<"}";
     }
-    void IR() const override{
-        std::cout<<" {"<<std::endl;
-        std::cout<<"%entry:"<<std::endl;
-        stmt->IR();
-        std::cout<<"}";
+    void IR(std::ostream &out) const override{
+        out<<" {"<<std::endl;
+        out<<"%entry:"<<std::endl;
+        stmt->IR(out);
+        out<<"}";
     }
 };
 // ...
