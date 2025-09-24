@@ -2,9 +2,13 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <cassert>
 extern "C" {
 #include "koopa.h"
 }
+#include <cstdint>
+#include "../include/IR.hpp"
+using namespace std;
 
 // 访问 raw program
 void Visit(const koopa_raw_program_t &program) {
@@ -46,6 +50,13 @@ void Visit(const koopa_raw_function_t &func) {
   // 执行一些其他的必要操作
   // ...
   // 访问所有基本块
+// 只生成“有定义”的函数（声明的 bbs.len == 0）
+  if (func->bbs.len == 0) return;
+  std::string fname = func->name;           // 形如 "@main"
+  if (!fname.empty() && fname[0] == '@') fname = fname.substr(1);
+  cout << ".text\n";
+  cout << ".globl " << fname << "\n";
+  cout << fname << ":\n";
   Visit(func->bbs);
 }
 
@@ -76,8 +87,32 @@ void Visit(const koopa_raw_value_t &value) {
   }
 }
 
+ /*
+  .text
+  .globl main
+main:
+  li a0, 0
+  ret
+  */
+
 // 访问对应类型指令的函数定义略
 // 视需求自行实现
+static int32_t GetI32(const koopa_raw_value_t v) {
+  assert(v && v->kind.tag == KOOPA_RVT_INTEGER);
+  return v->kind.data.integer.value;
+}
+
+void Visit(const koopa_raw_return_t &ret){
+    int32_t rv =0;
+    if(ret.value) rv =GetI32(ret.value);
+    cout<<" li a0, "<<rv<<"\n";
+    cout<<" ret\n";
+}
+
+// integer 常量：通常不直接输出，由使用它的指令消费
+void Visit(const koopa_raw_integer_t &i) {
+  (void)i;
+}
 // ...
 
 

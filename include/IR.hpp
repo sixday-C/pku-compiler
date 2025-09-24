@@ -7,6 +7,8 @@ extern "C" {
 // 声明重载的 Visit（不同参数类型）
 void Visit(const koopa_raw_program_t &program);
 void Visit(const koopa_raw_slice_t &slice);
-void Visit(const koopa_raw_function_t func);
-void Visit(const koopa_raw_basic_block_t bb);
-void Visit(const koopa_raw_value_t value);
+void Visit(const koopa_raw_function_t &func);
+void Visit(const koopa_raw_basic_block_t &bb);
+void Visit(const koopa_raw_value_t &value);
+void Visit(const koopa_raw_return_t &ret);      // ★ 新增
+void Visit(const koopa_raw_integer_t &i);       // ★ 新增

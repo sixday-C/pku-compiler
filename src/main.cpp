@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream> 
 #include "../include/ast.hpp"
+#include "../include/IR.hpp"
 #include "koopa.h"
 
 using namespace std;
@@ -52,6 +53,9 @@ assert(!ret);
   // 传给 libkoopa
 
 
+  
+
+
 // 解析字符串 str, 得到 Koopa IR 程序
 koopa_program_t program;
 koopa_error_code_t ret1 = koopa_parse_from_string(g_ir_cstr, &program);
@@ -61,40 +65,7 @@ koopa_raw_program_builder_t builder = koopa_new_raw_program_builder();
 // 将 Koopa IR 程序转换为 raw program
 koopa_raw_program_t raw = koopa_build_raw_program(builder, program);
 
-//遍历函数列表
-
-// 使用 for 循环遍历函数列表
-for (size_t i = 0; i < raw.funcs.len; ++i) {
-  // 正常情况下, 列表中的元素就是函数, 我们只不过是在确认这个事实
-  // 当然, 你也可以基于 raw slice 的 kind, 实现一个通用的处理函数
-  assert(raw.funcs.kind == KOOPA_RSIK_FUNCTION);
-  // 获取当前函数
-  koopa_raw_function_t func = (koopa_raw_function_t) raw.funcs.buffer[i];
-  // 进一步处理当前函数
-  // ...
-      for (size_t j = 0; j < func->bbs.len; ++j) {
-      assert(func->bbs.kind == KOOPA_RSIK_BASIC_BLOCK);
-      koopa_raw_basic_block_t bb = (koopa_raw_basic_block_t) func->bbs.buffer[j];
-      // 进一步处理当前基本块
-                  koopa_raw_value_t value = ...;
-            // 示例程序中, 你得到的 value 一定是一条 return 指令
-            assert(value->kind.tag == KOOPA_RVT_RETURN);
-            // 于是我们可以按照处理 return 指令的方式处理这个 value
-            // return 指令中, value 代表返回值
-            koopa_raw_value_t ret_value = value->kind.data.ret.value;
-            // 示例程序中, ret_value 一定是一个 integer
-            assert(ret_value->kind.tag == KOOPA_RVT_INTEGER);
-            // 于是我们可以按照处理 integer 的方式处理 ret_value
-            // integer 中, value 代表整数的数值
-            int32_t int_val = ret_value->kind.data.integer.value;
-            // 示例程序中, 这个数值一定是 0
-            assert(int_val == 0);
-      // ...
-    }
-
-}
-
-
+Visit(raw);
 
 
 // 释放 Koopa IR 程序占用的内存

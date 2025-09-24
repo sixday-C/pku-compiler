@@ -118,7 +118,7 @@ class ReturnStmtAST :public StmtAST{
     void IR(std::ostream &out) const override{
         out<<"    ret ";
         value->IR(out);
-        out<<std::endl;
+        out<<"\n";
     }
 };
 
@@ -132,8 +132,8 @@ class BlockAST: public BaseAST{
         std::cout<<"}";
     }
     void IR(std::ostream &out) const override{
-        out<<" {"<<std::endl;
-        out<<"%entry:"<<std::endl;
+        out<<" {"<<"\n";
+        out<<"%entry:"<<"\n";
         stmt->IR(out);
         out<<"}";
     }
