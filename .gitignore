@@ -1,3 +1,5 @@
 /target
 .DS_Store
 build/
+*.koopa
+*.out

@@ -1,0 +1,4 @@
+fun @main() {
+%entry:
+  ret 134
+}
